@@ -1,5 +1,8 @@
-minedojo
-gym
-numpy
-opencv-python
-torch
+minedojo==0.1.0
+gym==0.21.0
+numpy==1.26.4
+opencv-python==4.8.0.76
+torch==2.8.0
+setuptools==65.5.0
+wheel==0.38.0
+pip==24.0
