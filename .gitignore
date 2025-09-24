@@ -7,5 +7,7 @@ logs
 .minecraft/data
 .minecraft/config
 .minecraft/downloads
+.minecraft/.fabric
 .minecraft/resourcepacks
 .minecraft/usercache.json
+.minecraft/versions/1.21.8/natives
