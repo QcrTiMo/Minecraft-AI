@@ -1,3 +1,2 @@
-minecraft-launcher-lib==7.1
 gymnasium==1.2.1
 numpy==2.3.3
