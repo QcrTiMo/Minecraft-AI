@@ -1,5 +1,6 @@
 .venv
 .git
+.vscode
 logs
 framework/.gradle
 framework/build
