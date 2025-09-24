@@ -1,3 +1,7 @@
 idea/
-venv
+.venv
+.git
 logs
+framework/.gradle
+framework/build
+framework/.github
