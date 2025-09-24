@@ -1,7 +1,6 @@
 .venv
 .git
 .vscode
-logs
 .minecraft/saves
 .minecraft/logs
 .minecraft/data

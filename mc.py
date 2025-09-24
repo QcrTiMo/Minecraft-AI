@@ -42,5 +42,5 @@ minecraft_command = minecraft_launcher_lib.command.get_minecraft_command(
 
 #启动游戏
 print("正在启动《我的世界》...")
-subprocess.run(minecraft_command)
+subprocess.run(minecraft_command, cwd=minecraft_directory)
 print("游戏已关闭。")
