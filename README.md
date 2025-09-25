@@ -60,7 +60,7 @@ cd Minecraft-AI
 **2. 安装 Node.js 依赖**
 确保你已安装 [Node.js](https://nodejs.org/) (推荐 v18 或更高版本)。然后在项目根目录运行：
 ```bash
-npm install flying-squid@1.11.0 mineflayer@4.33.0 prismarine-viewer@1.33.0 vec3@0.1.10 ws@8.18.3
+npm install flying-squid@1.11.0 mineflayer@4.33.0 prismarine-viewer@1.33.0 vec3@0.1.10 ws@8.18.3 canvas@3.2.0
 ```
 
 **3. 创建并激活 Python 虚拟环境**
@@ -80,45 +80,6 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-
-## 常见问题
-
-### 运行 `node bot.js` 报错 `Error: Cannot find module 'canvas'`
-
-这个错误是由于项目的依赖 `prismarine-viewer` 需要使用 `canvas` 模块，而 `canvas` 在 Windows 系统上需要额外的编译环境和库才能成功安装。
-
-**解决方案：**
-
-请严格按照以下步骤配置好 `canvas` 的依赖环境：
-
-**第一步：安装构建工具**
-
-以 **管理员身份** 打开 PowerShell 或 CMD，然后运行以下命令来安装 Node.js 的原生模块编译工具：
-
-```bash
-npm install --global --production windows-build-tools
-```
-这个过程会自动安装 Python 和 Visual C++ 构建工具，请耐心等待其完成。
-
-**第二步：安装 GTK 2 依赖库**
-
-`canvas` 依赖一个名为 `cairo` 的图形库，它包含在 **GTK 2** 中。
-
-1.  根据 [node-canvas 官方 Wiki](https://github.com/Automattic/node-canvas/wiki/Installation:-Windows) 的指引进行安装。
-2.  下载并安装 **GTK 2** (注意：不是 GTK 3 或 4)。
-3.  安装完成后，需要将 GTK 的 `bin` 目录添加到系统的 `Path` 环境变量中 (例如 `C:\Program Files\GTK2-Runtime\bin`，请根据你的实际安装路径调整)。
-
-**第三步：重新安装项目依赖**
-
-在完成了上述环境配置后，回到你的项目根目录 (`Minecraft-AI`)：
-
-1.  **删除** 已有的 `node_modules` 文件夹和 `package-lock.json` 文件，以确保进行干净的安装。
-2.  重新运行 `npm install` 命令来安装所有依赖，包括 `canvas`：
-
-```bash
-npm install
-```
-完成以上步骤后，`canvas` 模块应该就能被正确编译和安装了。此时再次运行 `node bot.js` 应该就不会再出现此错误。
 
 ## 如何开始训练
 
@@ -163,6 +124,7 @@ python train/navigation/go_to_xyz.py
 *   **丰富观察空间:** 在 `env/mc_env.py` 中向 AI 提供关于周围方块的信息，让它能真正“看到”障碍物。
 *   **设计新任务:** 在 `train/` 目录下创建新的任务，例如“砍树”(`get_wood`)，并为其在 `train/reward/` 中设计新的奖励函数。
 *   **课程学习:** 编写一个主脚本，让 AI 自动地先在简单环境 (`flat_world`) 中训练一定步数，然后自动加载模型，在更复杂的环境 (`hard_obstacles`) 中继续训练。
+
 
 
 
