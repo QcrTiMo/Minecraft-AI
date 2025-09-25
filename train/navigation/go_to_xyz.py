@@ -1,8 +1,8 @@
 import os
 
-from train.common.env import MinecraftEnv
+from env.mc_env import MinecraftEnv
 from agent.ppo_agent import PPOAgent
-from train.common.plotting_callback import PlottingCallback
+from train.callbacks.plotting_callback import PlottingCallback
 
 
 TOTAL_TIMESTEPS = 25000
@@ -15,6 +15,7 @@ if __name__ == "__main__":
     #准备文件夹和环境
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs(LOGS_DIR, exist_ok=True)
+
     env = MinecraftEnv()
 
     #创建PPO智能体
