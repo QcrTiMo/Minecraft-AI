@@ -1,5 +1,7 @@
 .git
 .venv
 .vscode
+models
 __pycache__
+*safetensors
 node_modules
