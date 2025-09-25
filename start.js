@@ -30,6 +30,23 @@ function loadWorldGenerator() {
 }
 
 //在代码中创建一个Minecraft服务器
+function startMinecraftServer() {
+  console.log("正在启动内存 Minecraft 服务器...");
+  createMCServer({
+    'port': MC_SERVER_PORT,
+    'version': MC_SERVER_VERSION,
+    'online-mode': false,
+    'world': loadWorldGenerator(),
+    'plugins': {},
+    'player-list-text': {
+      'header': { "text": "AI Minecraft 代理" },
+      'footer': { "text": "由 mineflayer 和 flying-squid 提供支持" }
+    }
+  });
+  console.log(`Minecraft 服务器已在端口 ${MC_SERVER_PORT} 上启动。`);
+}
+
+
 function startWebSocketServer(bot) {
   const wss = new WebSocketServer({ port: WEB_SOCKET_PORT });
   console.log(`WebSocket 服务器已在端口 ${WEB_SOCKET_PORT} 上启动。`);
