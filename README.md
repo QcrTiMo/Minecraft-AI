@@ -1,7 +1,9 @@
 ﻿# Minecraft-AI
 
-> Python版本：3.12.10
+> Python版本：3.13.7
 
-> Java版本："21.0.8" 2025-07-15 LTS
+> Node.js版本：V24.8.0
+
+> Minecraft版本：1.21.8
 
 
