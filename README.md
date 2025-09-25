@@ -43,10 +43,11 @@ Minecraft-AI/
 │   └── navigation/       #   - 具体的训练任务脚本 (如寻路)
 ├── training_background/  # (JS) 程序化生成训练世界的脚本
 ├── .gitignore
-├── bot.js                # (JS) 项目的主入口：启动服务器、机器人和通信
+├── bot.js                # (JS) 机器人主配置
 ├── package.json
 ├── README.md             # 本文档
-└── requirements.txt      # (PY) Python 依赖列表
+├── requirements.txt      # (PY) Python 依赖列表
+└── start.js                # (JS) 项目的主入口：启动服务器、机器人和通信
 ```
 
 ## 环境搭建
@@ -89,7 +90,7 @@ pip install -r requirements.txt
 
 打开一个终端，在项目根目录 `Minecraft-AI` 下运行：
 ```bash
-node bot.js [world_name]
+node start.js [world_name]
 ```
 *   `[world_name]` 是一个可选参数，它对应 `training_background` 文件夹下的脚本文件名（无需 `.js` 后缀）。
 *   如果**不提供** `world_name`，将默认加载 `flat_world`。
@@ -97,11 +98,11 @@ node bot.js [world_name]
 **可用世界示例：**
 *   **基础寻路训练 (平坦世界):**
     ```bash
-    node bot.js flat_world
+    node start.js flat_world
     ```
 *   **跳跃与避障训练 (带障碍的世界):**
     ```bash
-    node bot.js simple_obstacles/hard_obstacles
+    node start.js simple_obstacles/hard_obstacles
     ```
 当终端显示 "可视化界面已启动..." 时，环境已准备就绪。你可以在浏览器中打开 **`http://localhost:3001`** 来实时观看 AI 的视角。
 
