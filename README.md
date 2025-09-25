@@ -1,6 +1,6 @@
 # Minecraft-AI: 基于 Mineflayer 和 PyTorch 的 Minecraft AI 训练框架
 
-这是一个用于在《我的世界》(Minecraft) 中训练智能 AI 的强化学习框架。本项目利用 Node.js 端的 **Mineflayer** 库与游戏进行底层交互，并通过 WebSocket 将其封装成一个标准的、可供 Python 端调用的 **Gymnasium** 环境。AI 的训练基于 **PyTorch** 和 **Stable Baselines3** 库。
+这是一个用于在《我的世界》(Minecraft) 中训练智能 AI 的强化学习框架。本项目利用 Node.js 端的 [**Mineflayer**](https://github.com/PrismarineJS/mineflayer) 库与游戏进行底层交互，并通过 WebSocket 将其封装成一个标准的、可供 Python 端调用的 **Gymnasium** 环境。AI 的训练基于 **PyTorch** 和 **Stable Baselines3** 库。
 
 整个框架的核心特性是**自动化**和**模块化**：
 *   **代码内嵌服务器:** 无需手动开启 Minecraft 客户端或服务器，代码会自动创建一个内存服务器。
@@ -124,5 +124,6 @@ python train/navigation/go_to_xyz.py
 *   **丰富观察空间:** 在 `env/mc_env.py` 中向 AI 提供关于周围方块的信息，让它能真正“看到”障碍物。
 *   **设计新任务:** 在 `train/` 目录下创建新的任务，例如“砍树”(`get_wood`)，并为其在 `train/reward/` 中设计新的奖励函数。
 *   **课程学习:** 编写一个主脚本，让 AI 自动地先在简单环境 (`flat_world`) 中训练一定步数，然后自动加载模型，在更复杂的环境 (`hard_obstacles`) 中继续训练。
+
 
 
