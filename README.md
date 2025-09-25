@@ -27,7 +27,7 @@
 ## 项目结构
 
 ```
-mc-ai/
+Minecraft-AI/
 ├── actions/              # (JS) AI 在游戏中的原子动作定义 (移动, 跳跃, 转向等)
 ├── agent/                # (PY) AI 智能体的定义
 │   ├── model.py          #   - 定义神经网络的结构
@@ -124,4 +124,5 @@ python train/navigation/go_to_xyz.py
 *   **丰富观察空间:** 在 `env/mc_env.py` 中向 AI 提供关于周围方块的信息，让它能真正“看到”障碍物。
 *   **设计新任务:** 在 `train/` 目录下创建新的任务，例如“砍树”(`get_wood`)，并为其在 `train/reward/` 中设计新的奖励函数。
 *   **课程学习:** 编写一个主脚本，让 AI 自动地先在简单环境 (`flat_world`) 中训练一定步数，然后自动加载模型，在更复杂的环境 (`hard_obstacles`) 中继续训练。
+
 
