@@ -37,17 +37,25 @@ Minecraft-AI/
 ├── logs/                 # (Output) 存放训练日志和学习曲线图
 ├── models/               # (Output) 存放训练好的模型文件 (.zip, .safetensors)
 ├── node_modules/         # (JS) Node.js 依赖
+├── server/               # (JS) 存放所有服务器相关的模块
+│   ├── mcServer.js       #   - 负责启动和管理 Minecraft 服务器
+│   └── webSocketServer.js#   - 负责启动和管理 WebSocket 通信服务器
 ├── train/                # (PY) 训练任务的核心逻辑
 │   ├── callbacks/        #   - 存放自定义的回调函数 (如绘图)
-│   ├── reward/           #   - 存放不同任务的奖励函数
-│   └── navigation/       #   - 具体的训练任务脚本 (如寻路)
+│   ├── navigation/       #   - 具体的训练任务脚本 (如寻路)
+│   └── reward/           #   - 存放不同任务的奖励函数
 ├── training_background/  # (JS) 程序化生成训练世界的脚本
+├── utils/                # (JS) 存放通用辅助工具函数
+│   └── worldLoader.js    #   - 负责加载指定的 Minecraft 世界生成脚本
+├── viewer/               # (JS) 存放可视化界面相关的模块
+│   └── viewer.js         #   - 负责启动 Prismarine Viewer 网页可视化界面
 ├── .gitignore
-├── bot.js                # (JS) 机器人主配置
+├── bot.js                # (JS) 机器人主配置，负责创建和连接 Mineflayer 实例
+├── config.js             # (JS) 存放项目的全局配置文件 (如端口号)
 ├── package.json
 ├── README.md             # 本文档
 ├── requirements.txt      # (PY) Python 依赖列表
-└── start.js                # (JS) 项目的主入口：启动服务器、机器人和通信
+└── start.js              # (JS) 项目的主入口：按顺序启动所有服务
 ```
 
 ## 环境搭建

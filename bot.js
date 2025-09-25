@@ -1,13 +1,14 @@
 const mineflayer = require('mineflayer');
-const { mineflayer: viewer } = require('prismarine-viewer');
+const { MC_SERVER_PORT, MC_SERVER_VERSION, VIEWER_PORT } = require('./config');
 
-function Bot(options) {
+function Bot() {
   return new Promise((resolve, reject) => {
     const bot = mineflayer.createBot({
-      host: options.host,
-      port: options.port,
-      username: options.username,
-      version: options.version,
+      host: 'localhost',
+      port: MC_SERVER_PORT,
+      username: 'AI_Bot',
+      version: MC_SERVER_VERSION,
+      viewerPort: VIEWER_PORT
     });
 
     bot.on('login', () => {
@@ -21,7 +22,6 @@ function Bot(options) {
 
     bot.once('spawn', () => {
       console.log('机器人在世界中生成完毕。');
-      viewer(bot, { port: options.viewerPort });
       const path = [bot.entity.position.clone()];
       bot.on('move', () => {
         if (path[path.length - 1].distanceTo(bot.entity.position) > 1) {
