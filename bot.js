@@ -9,7 +9,7 @@ const handleAction = require('./actions');
 const MC_SERVER_PORT = 25565;
 const MC_SERVER_VERSION = '1.21';
 const WEB_SOCKET_PORT = 3000;
-const VIEWER_PORT = 3001;
+const VIEWER_PORT = 8080;
 
 let bot = null;
 
@@ -28,14 +28,19 @@ function loadWorldGenerator() {
   }
 }
 
-//在代码中创建一个Minecraft服务器
+// 在代码中创建一个Minecraft服务器
 async function startMinecraftServer() {
   console.log("正在启动内存 Minecraft 服务器...");
   const mcServer = createMCServer({
     'port': MC_SERVER_PORT,
     'version': MC_SERVER_VERSION,
     'online-mode': false,
-    'world': worldGenerator(),
+    'world': loadWorldGenerator(),
+    'plugins': {},
+    'player-list-text': {
+      'header': { "text": "AI Minecraft 代理" },
+      'footer': { "text": "由 mineflayer 和 flying-squid 提供支持" }
+    }
   });
   console.log(`Minecraft 服务器已在端口 ${MC_SERVER_PORT} 上启动。`);
 }
