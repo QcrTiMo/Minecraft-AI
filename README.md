@@ -90,6 +90,20 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+ **常见问题**
+> 训练开始前先运行 `python check_gpu.py` 查看pytorch是否支持GPU加速,
+> 若 `CUDA is available` 为 **False**,则在终端激活环境下输入
+
+```bash
+# Window
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+
+# Linux
+pip3 install torch torchvision
+```
+以确保安装的torch支持GPU,此问题将在未来一键脚本中解决.
+
+
 ## 如何开始训练
 
 训练过程分为两步：首先启动 Node.js 环境端，然后启动 Python 训练脚本。
