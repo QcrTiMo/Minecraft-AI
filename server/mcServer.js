@@ -1,5 +1,4 @@
 const mcServer  = require('flying-squid');
-const { loadWorldGenerator } = require('../utils/worldLoader');
 const { MC_SERVER_PORT, MC_SERVER_VERSION } = require('../config');
 
 function startMinecraftServer() {
