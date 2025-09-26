@@ -132,7 +132,7 @@ node start.js [world_name]
 
 打开**另一个**新的终端，确保**已激活 Python 虚拟环境**，然后运行具体的训练脚本：
 ```bash
-python train/navigation/go_to_xyz.py
+python -m train.navigation.go_to_xyz
 ```
 训练将立即开始，你会在终端看到 `stable-baselines3` 输出的训练日志，同时浏览器中的 AI 会开始自主行动。
 
@@ -147,6 +147,7 @@ python train/navigation/go_to_xyz.py
 *   **丰富观察空间:** 在 `env/mc_env.py` 中向 AI 提供关于周围方块的信息，让它能真正“看到”障碍物。
 *   **设计新任务:** 在 `train/` 目录下创建新的任务，例如“砍树”(`get_wood`)，并为其在 `train/reward/` 中设计新的奖励函数。
 *   **课程学习:** 编写一个主脚本，让 AI 自动地先在简单环境 (`flat_world`) 中训练一定步数，然后自动加载模型，在更复杂的环境 (`hard_obstacles`) 中继续训练。
+
 
 
 
