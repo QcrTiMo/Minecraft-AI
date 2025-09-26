@@ -4,7 +4,7 @@ TARGET_REACHED_THRESHOLD = 1.0
 REACH_TARGET_REWARD = 100        #到达目标给100
 ALIVE_PENALTY = -0.1
 
-def caculate_reward(info: dict, previous_info: dict, terminated: bool, truncated: bool) -> float:
+def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncated: bool) -> float:
     """
     计算“移动到指定坐标”任务的奖励。
     """

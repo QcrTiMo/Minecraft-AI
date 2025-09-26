@@ -12,6 +12,8 @@ function startWebSocketServer(bot) {
     ws.on('message', async message => {
       const data = JSON.parse(message);
       if (data.type === 'action' && bot && bot.entity) {
+        const pos = bot.entity.position;
+        console.log(`[坐标] X: ${pos.x.toFixed(2)}, Y: ${pos.y.toFixed(2)}, Z: ${pos.z.toFixed(2)}`);
         await handleAction(bot, data.action);
         sendState(ws, bot);
       }

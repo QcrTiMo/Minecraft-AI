@@ -1,6 +1,7 @@
 .git
 .venv
 .vscode
+logs/
 models
 __pycache__
 *safetensors

@@ -117,6 +117,9 @@ class MinecraftEnv(gym.Env):
         return observation, reward, terminated, truncated, self.info
 
     def close(self):
-        if self.websocket and self.websocket.open:
-            self.loop.run_until_complete(self.websocket.close())
-            print("环境连接已关闭。")
+        if self.websocket and not self.websocket.close:
+            try:
+                print("WebSocket 连接将被释放。")
+            except Exception as e:
+                print(f"尝试关闭 WebSocket 时发生错误: {e}")
+        self.websocket = None
