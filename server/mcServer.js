@@ -9,8 +9,7 @@ function startMinecraftServer() {
     'max-players': 3,
     'gameMode': 1,
     'difficulty': 1,
-    'worldFolder': 'world',
-    'world': loadWorldGenerator(),
+    'worldFolder': 'training_background/flat_world',
     'generation': {
       'name': 'diamond_square',
       'options': {
