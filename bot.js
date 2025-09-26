@@ -1,5 +1,5 @@
 const mineflayer = require('mineflayer')
-const { MC_SERVER_PORT, MC_SERVER_VERSION, VIEWER_PORT } = require('./config');
+const { MC_SERVER_PORT, MC_SERVER_VERSION } = require('./config');
 const { Viewer } = require('./viewer/viewer');
 
 function Bot() {
@@ -9,7 +9,6 @@ function Bot() {
       port: MC_SERVER_PORT,
       username: 'AI_Bot',
       version: MC_SERVER_VERSION,
-      viewerPort: VIEWER_PORT
     });
 
     bot.on('login', () => {
