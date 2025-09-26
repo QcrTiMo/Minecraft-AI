@@ -44,7 +44,7 @@ class MinecraftEnv(gym.Env):
         self.steps = 0
 
     async def _connect(self):
-        if self.websocket is None or not self.websocket.open:
+        if self.websocket is None or not self.websocket.close:
             self.websocket = await websockets.connect(self.websocket_uri)
             print("环境已成功连接到 Mineflayer 服务器。")
 
