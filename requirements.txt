@@ -4,3 +4,4 @@ torch==2.8.0
 stable-baselines3==2.7.0
 safetensors==0.6.2
 tensorboard
+requests==2.32.5

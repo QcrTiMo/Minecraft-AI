@@ -3,6 +3,7 @@ import os
 from env.mc_env import MinecraftEnv
 from agent.ppo_agent import PPOAgent
 from train.callbacks.plotting_callback import PlottingCallback
+from stable_baselines3.common.vec_env import DummyVecEnv
 
 
 TOTAL_TIMESTEPS = 25000
@@ -17,10 +18,11 @@ if __name__ == "__main__":
     os.makedirs(LOGS_DIR, exist_ok=True)
 
     env = MinecraftEnv()
+    vec_env = DummyVecEnv([lambda: env])
 
     #创建PPO智能体
     agent = PPOAgent(
-        env=env,
+        env=vec_env,
         model_name=MODEL_NAME,
         models_dir=MODELS_DIR,
         logs_dir=LOGS_DIR
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"训练过程中发生错误: {e}")
     finally:
-        env.close()
+        vec_env.close()
 
     #保存模型和图表
     agent.save()

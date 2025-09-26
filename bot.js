@@ -22,15 +22,21 @@ function Bot() {
 
     bot.once('spawn', () => {
       console.log('机器人在世界中生成完毕。');
-      const path = [bot.entity.position.clone()];
       bot.chat(`/tp @s 0 61 0`);
-      bot.on('move', () => {
-        if (path[path.length - 1].distanceTo(bot.entity.position) > 1) {
-          path.push(bot.entity.position.clone());
-          bot.viewer.drawLine('path', path);
-        }
-      });
-      resolve(bot);
+
+
+      setTimeout(() => {
+        console.log(`传送完成，当前坐标: Y=${bot.entity.position.y.toFixed(2)}`);
+
+        const path = [bot.entity.position.clone()];
+        bot.on('move', () => {
+          if (path[path.length - 1].distanceTo(bot.entity.position) > 1) {
+            path.push(bot.entity.position.clone());
+            bot.viewer.drawLine('path', path);
+          }
+        });
+        resolve(bot);
+      }, 1000);
     });
   });
 }
