@@ -1,5 +1,6 @@
-const mineflayer = require('mineflayer');
+const mineflayer = require('mineflayer')
 const { MC_SERVER_PORT, MC_SERVER_VERSION, VIEWER_PORT } = require('./config');
+const { Viewer } = require('./viewer/viewer');
 
 function Bot() {
   return new Promise((resolve, reject) => {
@@ -21,10 +22,9 @@ function Bot() {
     });
 
     bot.once('spawn', () => {
+      Viewer(bot);
       console.log('机器人在世界中生成完毕。');
       bot.chat(`/tp @s 0 61 0`);
-
-
       setTimeout(() => {
         console.log(`传送完成，当前坐标: Y=${bot.entity.position.y.toFixed(2)}`);
 

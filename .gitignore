@@ -3,6 +3,7 @@
 .vscode
 logs/
 models
+world/
 __pycache__
 *safetensors
 node_modules
