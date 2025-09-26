@@ -20,6 +20,7 @@ class PPOAgent:
             self.env,
             policy_kwargs=MLP_POLICY_KWARGS,
             verbose=1,
+            device='cpu',
             tensorboard_log=os.path.join(self.logs_dir, "tensorboard")
         )
 
