@@ -19,6 +19,13 @@ class Checkpoint(BaseCallback):
         
         #确保保存路径存在
         os.makedirs(self.save_path, exist_ok=True)
+    
+    def _on_step(self) -> bool:
+        """
+        这个方法是BaseCallback要求必须实现的。
+        由于我们的逻辑都在_on_rollout_end中，所以这里我们只需要让它返回True继续训练即可
+        """
+        return True
 
     def _on_rollout_end(self) -> None:
         """
