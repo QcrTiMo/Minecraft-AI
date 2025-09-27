@@ -1,7 +1,6 @@
 import os
 
 from env.mc_env import MinecraftEnv
-from agent.ppo_agent import PPOAgent
 from train.callbacks.plotting_callback import PlottingCallback
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CallbackList
