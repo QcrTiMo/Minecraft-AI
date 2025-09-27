@@ -3,7 +3,7 @@
 .vscode
 logs/
 models
-world/
+training_background/
 __pycache__
 *safetensors
 node_modules
