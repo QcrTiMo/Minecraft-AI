@@ -120,11 +120,7 @@ node start.js [world_name]
 **可用世界示例：**
 *   **基础寻路训练 (平坦世界):**
     ```bash
-    node start.js flat_world
-    ```
-*   **跳跃与避障训练 (带障碍的世界):**
-    ```bash
-    node start.js simple_obstacles/hard_obstacles
+    node start.js
     ```
 当终端显示 "可视化界面已启动..." 时，环境已准备就绪。你可以在浏览器中打开 **`http://localhost:3001`** 来实时观看 AI 的视角。
 
@@ -147,6 +143,7 @@ python -m train.navigation.go_to_xyz
 *   **丰富观察空间:** 在 `env/mc_env.py` 中向 AI 提供关于周围方块的信息，让它能真正“看到”障碍物。
 *   **设计新任务:** 在 `train/` 目录下创建新的任务，例如“砍树”(`get_wood`)，并为其在 `train/reward/` 中设计新的奖励函数。
 *   **课程学习:** 编写一个主脚本，让 AI 自动地先在简单环境 (`flat_world`) 中训练一定步数，然后自动加载模型，在更复杂的环境 (`hard_obstacles`) 中继续训练。
+
 
 
 
