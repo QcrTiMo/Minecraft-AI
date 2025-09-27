@@ -75,12 +75,16 @@ class MinecraftEnv(gym.Env):
         distance = np.linalg.norm(rel_pos)
         yaw_to_target = math.atan2(-rel_pos[0], -rel_pos[2])
         
-        return np.array([
+        observation = np.array([
             rel_pos[0], rel_pos[1], rel_pos[2],
             distance,
             math.cos(bot_yaw), math.sin(bot_yaw),
             math.cos(yaw_to_target), math.sin(yaw_to_target)
         ], dtype=np.float32)
+        
+        #将原始角度信息也一并返回，方便在info中使用
+        return observation, bot_yaw, yaw_to_target
+
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -103,9 +107,14 @@ class MinecraftEnv(gym.Env):
 
         self.steps = 0
         self.current_state = initial_state
-        observation = self._state_to_observation(initial_state)
+        observation, bot_yaw, yaw_to_target = self._state_to_observation(initial_state)
 
-        self.info = {"distance_to_target": observation[3], "steps": self.steps}
+        self.info = {
+            "distance_to_target": observation[3],
+            "steps": self.steps,
+            #计算并记录角度差
+            "angle_diff_to_target": abs(bot_yaw - yaw_to_target)
+        }
         self.previous_info = self.info.copy()
         
         return observation, self.info
@@ -124,9 +133,13 @@ class MinecraftEnv(gym.Env):
 
         #更新状态和信息
         self.steps += 1
-        observation = self._state_to_observation(self.current_state)
+        observation, bot_yaw, yaw_to_target = self._state_to_observation(self.current_state)
         self.previous_info = self.info.copy()
-        self.info = {"distance_to_target": observation[3], "steps": self.steps}
+        self.info = {
+            "distance_to_target": observation[3],
+            "steps": self.steps,
+            "angle_diff_to_target": abs(bot_yaw - yaw_to_target)
+        }
         
         #判断回合是否结束
         terminated = is_terminated(self.info)
