@@ -3,7 +3,7 @@ import glob
 from stable_baselines3.common.callbacks import BaseCallback
 import numpy as np
 
-class CheckpointCallback(BaseCallback):
+class Checkpoint(BaseCallback):
     """
     在每次总结时，同时保存 .zip (完整检查点) 和 .safetensors (权重) 文件。
     跟踪训练过程中的最低损失 (loss)。
@@ -11,7 +11,7 @@ class CheckpointCallback(BaseCallback):
     并删除所有其他的临时检查点。
     """
     def __init__(self, save_path: str, model_name: str, verbose=1):
-        super(CheckpointCallback, self).__init__(verbose)
+        super(Checkpoint, self).__init__(verbose)
         self.save_path = save_path
         self.model_name = model_name
         self.best_loss = np.inf
