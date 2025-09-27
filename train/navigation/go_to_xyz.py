@@ -6,7 +6,7 @@ from train.callbacks.plotting_callback import PlottingCallback
 from stable_baselines3.common.vec_env import DummyVecEnv
 
 
-TOTAL_TIMESTEPS = 25000
+TOTAL_TIMESTEPS = 100000     #100000约等于3小时,200000也可以,如果时间允许
 MODEL_NAME = "ppo_go_to_xyz_v1"
 MODELS_DIR = "models"
 LOGS_DIR = "logs"
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     )
 
     #创建绘图
-    plotting_callback = PlottingCallback(check_freq=1024, logs_dir=LOGS_DIR, model_name=MODEL_NAME)
+    plotting_callback = PlottingCallback(logs_dir=LOGS_DIR, model_name=MODEL_NAME)
 
     #开始训练
     try:
