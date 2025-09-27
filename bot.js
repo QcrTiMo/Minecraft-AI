@@ -1,6 +1,6 @@
 const mineflayer = require('mineflayer')
-const { MC_SERVER_PORT, MC_SERVER_VERSION } = require('./config');
-const { Viewer } = require('./viewer/viewer');
+const { MC_SERVER_PORT } = require('./config');
+//const { Viewer } = require('./viewer/viewer');
 
 function Bot() {
   return new Promise((resolve, reject) => {
@@ -8,28 +8,16 @@ function Bot() {
       host: 'localhost',
       port: MC_SERVER_PORT,
       username: 'AI_Bot',
-      version: MC_SERVER_VERSION,
-    });
-
-    bot.on('login', () => {
-      console.log('机器人已成功登录到本地服务器。');
-    });
-
-    bot.on('error', (err) => {
-      console.log('机器人遇到错误:', err);
-      reject(err);
     });
 
     bot.once('spawn', () => {
-      Viewer(bot);
-      console.log('机器人在世界中生成完毕。');
-//      bot.chat(`/tp @s 0 61 0`);
-      setTimeout(() => {
-//        console.log(`传送完成，当前坐标: Y=${bot.entity.position.y.toFixed(2)}`);
-
-        resolve(bot);
-      }, 1000);
+      //Viewer(bot);
+      console.log('机器人已成功在本地服务器中生成完毕。');
+      resolve(bot);
     });
+
+    bot.on('error', err => reject(err));
+    bot.on('end', reason => console.log(`机器人断开连接: ${reason}`));
   });
 }
 
