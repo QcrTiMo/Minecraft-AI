@@ -46,13 +46,16 @@ class PlottingCallback(BaseCallback):
         这个方法在每次rollout收集结束 (模型即将更新) 后调用。
         这是获取 train/* 指标的最佳时机。
         """
-        self.train_timesteps.append(self.num_timesteps)
         log_dict = self.model.logger.name_to_value
-        
+        is_valid_log = False
         for key in self.train_metrics.keys():
             full_key = f'train/{key}'
             if full_key in log_dict:
                 self.train_metrics[key].append(log_dict[full_key])
+                is_valid_log = True
+        if is_valid_log:
+            self.train_timesteps.append(self.num_timesteps)
+
 
     def plot_and_save(self):
         """
