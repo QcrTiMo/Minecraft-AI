@@ -30,7 +30,7 @@ if __name__ == "__main__":
         model_path=model_path,
         env=vec_env,
         tensorboard_log=os.path.join(LOGS_DIR, "tensorboard"),
-        device='auto'
+        device='cpu'
     )
 
     #创建绘图
