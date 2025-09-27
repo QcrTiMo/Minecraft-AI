@@ -6,12 +6,22 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CallbackList
 from utils.model_manager import get_or_create_model
 from utils.checkpoint import Checkpoint
+from typing import Callable
 
 
 TOTAL_TIMESTEPS = 100000     #100000约等于3小时,200000也可以,如果时间允许
 MODEL_NAME = "model"
 MODELS_DIR = "models"
 LOGS_DIR = "logs"
+
+
+def linear_schedule(initial_value: float) -> Callable[[float], float]:
+    """
+    创建一个线性衰减的学习率schedule。
+    """
+    def func(progress_remaining: float) -> float:
+        return progress_remaining * initial_value
+    return func
 
 
 if __name__ == "__main__":
@@ -29,13 +39,15 @@ if __name__ == "__main__":
         model_path=model_path,
         env=vec_env,
         tensorboard_log=os.path.join(LOGS_DIR, "tensorboard"),
-        device='cpu'
+        device='cpu',
+        learning_rate=linear_schedule(0.0003)
     )
 
     #创建绘图
     plotting_callback = PlottingCallback(logs_dir=LOGS_DIR, model_name=MODEL_NAME)
     checkpoint_callback = Checkpoint(save_path=MODELS_DIR, model_name=MODEL_NAME)
     callback_list = CallbackList([plotting_callback, checkpoint_callback])
+
 
     #开始训练
     try:
