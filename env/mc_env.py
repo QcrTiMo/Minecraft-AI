@@ -29,9 +29,9 @@ class MinecraftEnv(gym.Env):
             1: ("move", {"direction": "back", "duration": 250}),
             2: ("move", {"direction": "left", "duration": 250}),
             3: ("move", {"direction": "right", "duration": 250}),
-            4: ("jump", {}),
-            5: ("turn", {"angle_change": -math.radians(15)}),
-            6: ("turn", {"angle_change": math.radians(15)}),
+            #4: ("jump", {}),
+            4: ("turn", {"angle_change": -math.radians(15)}),
+            5: ("turn", {"angle_change": math.radians(15)}),
         }
 
         #观察空间
@@ -84,7 +84,7 @@ class MinecraftEnv(gym.Env):
         initial_state = self.loop.run_until_complete(self._get_next_state())
         bot_pos = initial_state['basic']['position']
         
-        offset = np.random.uniform(-15, 15, size=2)
+        offset = np.random.uniform(-5, 5, size=2)
         self.target_position = {
             'x': bot_pos['x'] + offset[0], 'y': bot_pos['y'], 'z': bot_pos['z'] + offset[1]
         }

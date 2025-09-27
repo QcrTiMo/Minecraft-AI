@@ -35,4 +35,4 @@ def is_truncated(info: dict) -> bool:
     判断任务是否因失败或超时而截断。
     """
     #如果任务超过500步还没完成，就判为超时
-    return info['steps'] > 500
+    return info['steps'] > 3000
