@@ -23,20 +23,21 @@ class MinecraftEnv(gym.Env):
             asyncio.set_event_loop(self.loop)
 
         #动作空间
-        self.action_space = spaces.Discrete(7)
+        self.action_space = spaces.Discrete(6)
         self.action_map = {
             0: ("move", {"direction": "forward", "duration": 250}),
             1: ("move", {"direction": "back", "duration": 250}),
             2: ("move", {"direction": "left", "duration": 250}),
             3: ("move", {"direction": "right", "duration": 250}),
-            #4: ("jump", {}),
             4: ("turn", {"angle_change": -math.radians(15)}),
             5: ("turn", {"angle_change": math.radians(15)}),
+            #6: ("jump",)
         }
 
         #观察空间
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(8,), dtype=np.float32)
 
+        #状态变量
         self.current_state = None
         self.target_position = None
         self.info = {}
@@ -44,7 +45,7 @@ class MinecraftEnv(gym.Env):
         self.steps = 0
 
     async def _connect(self):
-        if self.websocket is None or not self.websocket.close:
+        if self.websocket is None or self.websocket.close:
             self.websocket = await websockets.connect(self.websocket_uri)
             print("环境已成功连接到 Mineflayer 服务器。")
 
@@ -53,8 +54,13 @@ class MinecraftEnv(gym.Env):
         await self.websocket.send(message)
 
     async def _get_next_state(self):
-        message = await self.websocket.recv()
-        return json.loads(message)
+        #增加超时以防止无限等待
+        try:
+            message = await asyncio.wait_for(self.websocket.recv(), timeout=10.0)
+            return json.loads(message)
+        except asyncio.TimeoutError:
+            print("警告: 10秒内未收到服务器状态，可能已卡死。返回None。")
+            return None
 
     def _state_to_observation(self, state):
         bot_pos = state['basic']['position']
@@ -79,11 +85,15 @@ class MinecraftEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.loop.run_until_complete(self._connect())
-        
         self.loop.run_until_complete(self._send_action("look", {"yaw": 0, "pitch": 0}))
         initial_state = self.loop.run_until_complete(self._get_next_state())
+
+        if initial_state is None:
+            raise RuntimeError("在 reset() 期间未能从服务器获取初始状态。")
+
         bot_pos = initial_state['basic']['position']
         
+        #减小初始难度
         offset = np.random.uniform(-5, 5, size=2)
         self.target_position = {
             'x': bot_pos['x'] + offset[0], 'y': bot_pos['y'], 'z': bot_pos['z'] + offset[1]
@@ -100,26 +110,41 @@ class MinecraftEnv(gym.Env):
         return observation, self.info
 
     def step(self, action):
+        #发送动作并获取新状态
         action_name, params = self.action_map.get(action)
         self.loop.run_until_complete(self._send_action(action_name, params))
         
         self.current_state = self.loop.run_until_complete(self._get_next_state())
+
+        if self.current_state is None:
+            print("通信超时，强制重置环境。")
+            observation, self.info = self.reset()
+            return observation, -10, False, True, self.info
+
+        #更新状态和信息
         self.steps += 1
-        
         observation = self._state_to_observation(self.current_state)
         self.previous_info = self.info.copy()
         self.info = {"distance_to_target": observation[3], "steps": self.steps}
         
+        #判断回合是否结束
         terminated = is_terminated(self.info)
         truncated = is_truncated(self.info)
-        reward = calculate_reward(self.info, self.previous_info, terminated, truncated)
         
+        #计算奖励
+        reward = calculate_reward(self.info, self.previous_info, terminated, truncated)
+        if truncated:
+            print(f"回合因步数超过上限 ({self.info['steps']} 步) 而被截断。正在强制重置...")
+            observation, self.info = self.reset()
+        
+        #返回结果
         return observation, reward, terminated, truncated, self.info
 
     def close(self):
         if self.websocket and not self.websocket.close:
             try:
-                print("WebSocket 连接将被释放。")
+                self.loop.run_until_complete(self.websocket.close())
+                print("WebSocket 连接已关闭。")
             except Exception as e:
                 print(f"尝试关闭 WebSocket 时发生错误: {e}")
         self.websocket = None

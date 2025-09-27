@@ -3,6 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from stable_baselines3.common.callbacks import BaseCallback
 
+try:
+    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei']
+    plt.rcParams['axes.unicode_minus'] = False
+except Exception as e:
+    print(f"设置中文字体失败，图表中的中文可能无法正常显示: {e}")
+
 class PlottingCallback(BaseCallback):
     def __init__(self, logs_dir: str, model_name: str, verbose=1):
         super(PlottingCallback, self).__init__(verbose)
@@ -41,7 +47,7 @@ class PlottingCallback(BaseCallback):
         这是获取 train/* 指标的最佳时机。
         """
         self.train_timesteps.append(self.num_timesteps)
-        log_dict = self.model.logger.get_log_dict()
+        log_dict = self.model.logger.name_to_value
         
         for key in self.train_metrics.keys():
             full_key = f'train/{key}'
