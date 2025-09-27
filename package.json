@@ -1,9 +1,10 @@
 {
   "dependencies": {
     "canvas": "^3.2.0",
-    "flying-squid": "^1.11.0",
+    "flying-squid": "^1.5.0",
     "mineflayer": "^4.0.0",
     "prismarine-viewer": "^1.33.0",
+    "superflat": "^0.0.0",
     "vec3": "^0.1.10",
     "ws": "^8.18.3"
   }

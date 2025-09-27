@@ -8,9 +8,9 @@ function startMinecraftServer() {
     'max-players': 3,
     'gameMode': 1,
     'difficulty': 1,
-    'worldFolder': 'training_background/flat_world',
+    'worldFolder': 'training_background',
     'generation': {
-      'name': 'diamond_square',
+      'name': 'superflat',
       'options': {
         'worldHeight': 80
       }
