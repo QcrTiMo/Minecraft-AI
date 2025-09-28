@@ -69,7 +69,7 @@ cd Minecraft-AI
 **2. 安装 Node.js 依赖**
 确保你已安装 [Node.js](https://nodejs.org/) (推荐 v18 或更高版本)。然后在项目根目录运行：
 ```bash
-npm install flying-squid@1.11.0 mineflayer@4.33.0 prismarine-viewer@1.33.0 vec3@0.1.10 ws@8.18.3 canvas@3.2.0 superflat
+npm install flying-squid@1.11.0 mineflayer@4.33.0 prismarine-viewer@1.33.0 vec3@0.1.10 ws@8.18.3 canvas@3.2.0 js-yaml@4.1.0
 ```
 
 **3. 创建并激活 Python 虚拟环境**
