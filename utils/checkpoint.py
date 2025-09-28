@@ -78,24 +78,41 @@ class Checkpoint(BaseCallback):
         
         all_zip_checkpoints = glob.glob(os.path.join(self.save_path, f"{self.model_name}_*_steps_score_*.zip"))
         
-        if not self.best_model_checkpoint_path:
-            print("警告: 未找到最佳模型。")
+        if not self.best_model_checkpoint_path or not os.path.exists(f"{self.best_model_checkpoint_path}.zip"):
+            print("警告: 未找到有效的最佳模型检查点，清理程序将跳过。")
+            final_model_path = os.path.join(self.save_path, f"{self.model_name}.zip")
+            if os.path.exists(final_model_path):
+                print(f"保留原始模型: {final_model_path}")
             return
 
         print(f"最佳模型是: {self.best_model_checkpoint_path} (Score: {self.best_score:.2f})")
         
         final_model_base_path = os.path.join(self.save_path, self.model_name)
+        old_zip_path = f"{final_model_base_path}.zip"
+        old_safetensors_path = f"{final_model_base_path}.safetensors"
         
+        if os.path.exists(old_zip_path):
+            print(f"正在删除旧的最终模型: {old_zip_path}")
+            os.remove(old_zip_path)
+            
+        if os.path.exists(old_safetensors_path):
+            print(f"正在删除旧的最终模型: {old_safetensors_path}")
+            os.remove(old_safetensors_path)
+        
+        #遍历所有检查点
         for zip_path in all_zip_checkpoints:
             current_base_path = os.path.splitext(zip_path)[0]
             safetensors_path = f"{current_base_path}.safetensors"
             
+            #如果是最佳模型，就重命名
             if current_base_path == self.best_model_checkpoint_path:
                 print(f"正在将最佳模型 .zip 重命名为: {final_model_base_path}.zip")
                 os.rename(zip_path, f"{final_model_base_path}.zip")
+                
                 if os.path.exists(safetensors_path):
                     print(f"正在将最佳模型 .safetensors 重命名为: {final_model_base_path}.safetensors")
                     os.rename(safetensors_path, f"{final_model_base_path}.safetensors")
+            #如果不是最佳模型，就删除
             else:
                 os.remove(zip_path)
                 if os.path.exists(safetensors_path):
