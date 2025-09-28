@@ -97,13 +97,15 @@ class MinecraftEnv(gym.Env):
         if initial_state is None:
             raise RuntimeError("在 reset() 期间未能从服务器获取初始状态。")
 
-        bot_pos = initial_state['basic']['position']
+        origin_point = {'x': 0, 'y': -60, 'z': 0}
         
         #减小初始难度
         offset_range = self.config['environment']['reset_offset']
         offset = np.random.uniform(offset_range[0], offset_range[1], size=2)
         self.target_position = {
-            'x': bot_pos['x'] + offset[0], 'y': bot_pos['y'], 'z': bot_pos['z'] + offset[1]
+        'x': origin_point['x'] + offset[0], 
+        'y': origin_point['y'], 
+        'z': origin_point['z'] + offset[1]
         }
         print(f"新回合开始! 目标: ({self.target_position['x']:.1f}, {self.target_position['z']:.1f})")
 
