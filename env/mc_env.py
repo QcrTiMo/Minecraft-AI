@@ -149,8 +149,13 @@ class MinecraftEnv(gym.Env):
         
         #计算奖励
         reward = calculate_reward(self.info, self.previous_info, terminated, truncated)
+
+        if terminated:
+            print(f"--- ✔ 任务成功! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}")
+            
+        #如果任务因超时而截断
         if truncated:
-            print(f"回合因步数超过上限 ({self.info['steps']} 步) 而被截断。正在强制重置...")
+            print(f"--- ✖ 超时失败! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}")
             observation, self.info = self.reset()
         
         #返回结果
