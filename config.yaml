@@ -6,12 +6,15 @@ training:
   models_dir: "models"           #保存模型的目录
   logs_dir: "logs"               #保存日志的目录
   device: "cpu"                  #训练设备: "cpu" 或 "cuda" 或 "auto"
-  learning_rate: 0.0003          #PPO学习率的初始值
+  learning_rate: 0.0001          #PPO学习率的初始值
+  ppo_params:
+    n_epochs: 20
+    gae_lambda: 0.92
 
 #环境相关参数
 environment:
   max_steps: 3000                #每个回合的最大步数上限
-  reset_offset: [-5, 5]          #新回合目标点的随机偏移范围 [min, max]
+  reset_offset: [-8, 8]          #新回合目标点的随机偏移范围 [min, max]
 
 #奖励函数超参数
 reward:

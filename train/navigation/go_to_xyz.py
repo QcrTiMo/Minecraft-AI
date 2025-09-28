@@ -11,6 +11,7 @@ from typing import Callable
 
 config = load_config()
 training_config = config['training']
+ppo_params = training_config.get('ppo_params', {})
 
 TOTAL_TIMESTEPS = training_config['total_timesteps']
 MODEL_NAME = training_config['model_name']
@@ -42,7 +43,8 @@ if __name__ == "__main__":
         env=vec_env,
         tensorboard_log=os.path.join(LOGS_DIR, "tensorboard"),
         device=training_config['device'],
-        learning_rate=linear_schedule(training_config['learning_rate'])
+        learning_rate=linear_schedule(training_config['learning_rate']),
+        **ppo_params
     )
 
     #创建绘图
