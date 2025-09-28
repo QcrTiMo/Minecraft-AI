@@ -1,10 +1,9 @@
 const { WebSocketServer } = require('ws');
 const handleAction = require('../actions');
-const { WEB_SOCKET_PORT } = require('../utils/config');
+const config = require('../utils/config');
 
 /**
  * 等待bot.entity可用后再发送初始状态
- * @param {WebSocket} ws - WebSocket客户端
  * @param {Bot} bot - mineflayer机器人实例
  */
 function sendInitialStateWhenReady(ws, bot) {
@@ -24,8 +23,8 @@ function sendInitialStateWhenReady(ws, bot) {
 
 
 function startWebSocketServer(bot) {
-  const wss = new WebSocketServer({ port: WEB_SOCKET_PORT });
-  console.log(`WebSocket 服务器已在端口 ${WEB_SOCKET_PORT} 上启动。`);
+  const wss = new WebSocketServer({ port: config.server.ws_port });
+  console.log(`WebSocket 服务器已在端口 ${config.server.ws_port} 上启动。`);
 
   wss.on('connection', ws => {
     console.log('Python AI 代理已连接。');

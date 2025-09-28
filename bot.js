@@ -1,12 +1,12 @@
 const mineflayer = require('mineflayer')
-const { MC_SERVER_PORT } = require('./utils/config');
+const config = require('./utils/config');
 
 function Bot() {
   return new Promise((resolve, reject) => {
     const bot = mineflayer.createBot({
-      host: 'localhost',
-      port: MC_SERVER_PORT,
-      username: 'AI_Bot',
+      host: config.server.host,
+      port: config.server.mc_port,
+      username: config.server.name,
     });
 
     bot.once('spawn', () => {
