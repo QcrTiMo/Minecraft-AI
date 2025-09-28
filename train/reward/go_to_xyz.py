@@ -1,15 +1,15 @@
 import numpy as np
 import math
+from utils.config import load_config
 
-TARGET_REACHED_THRESHOLD = 1.0
-REACH_TARGET_REWARD = 20.0
-TRUNCATED_PENALTY = -5.0
-ALIVE_PENALTY = -0.1
+reward_config = load_config()['reward']
 
-W_DISTANCE = 1.0  #距离奖励的权重
-W_ANGLE = 0.5      #朝向奖励的权重
-
-
+TARGET_REACHED_THRESHOLD = reward_config['target_reached_threshold']
+REACH_TARGET_REWARD = reward_config['reach_target_reward']
+TRUNCATED_PENALTY = reward_config['truncated_penalty']
+ALIVE_PENALTY = reward_config['alive_penalty']
+W_DISTANCE = reward_config['w_distance']
+W_ANGLE = reward_config['w_angle']
 
 def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncated: bool) -> float:
     """
@@ -34,4 +34,5 @@ def is_terminated(info: dict) -> bool:
 
 def is_truncated(info: dict) -> bool:
     """判断任务是否因失败或超时而截断。"""
-    return info['steps'] > 3000
+    env_config = load_config()['environment']
+    return info['steps'] > env_config['max_steps']

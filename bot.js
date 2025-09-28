@@ -1,6 +1,5 @@
 const mineflayer = require('mineflayer')
-const { MC_SERVER_PORT } = require('./config');
-//const { Viewer } = require('./viewer/viewer');
+const { MC_SERVER_PORT } = require('./utils/config');
 
 function Bot() {
   return new Promise((resolve, reject) => {
@@ -11,7 +10,6 @@ function Bot() {
     });
 
     bot.once('spawn', () => {
-      //Viewer(bot);
       console.log('机器人已成功在本地服务器中生成完毕。');
       resolve(bot);
     });

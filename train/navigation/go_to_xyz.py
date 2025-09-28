@@ -6,13 +6,16 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CallbackList
 from utils.model_manager import get_or_create_model
 from utils.checkpoint import Checkpoint
+from utils.config import load_config
 from typing import Callable
 
+config = load_config()
+training_config = config['training']
 
-TOTAL_TIMESTEPS = 100000    #100000约等于3小时,200000也可以,如果时间允许
-MODEL_NAME = "model"
-MODELS_DIR = "models"
-LOGS_DIR = "logs"
+TOTAL_TIMESTEPS = training_config['total_timesteps']
+MODEL_NAME = training_config['model_name']
+MODELS_DIR = training_config['models_dir']
+LOGS_DIR = training_config['logs_dir']
 
 
 def linear_schedule(initial_value: float) -> Callable[[float], float]:
@@ -39,8 +42,8 @@ if __name__ == "__main__":
         model_path=model_path,
         env=vec_env,
         tensorboard_log=os.path.join(LOGS_DIR, "tensorboard"),
-        device='cpu',
-        learning_rate=linear_schedule(0.0003)
+        device=training_config['device'],
+        learning_rate=linear_schedule(training_config['learning_rate'])
     )
 
     #创建绘图

@@ -11,8 +11,9 @@ from train.reward.go_to_xyz import calculate_reward, is_terminated, is_truncated
 class MinecraftEnv(gym.Env):
     metadata = {"render_modes": ["human"]}
 
-    def __init__(self, websocket_uri="ws://localhost:3000"):
+    def __init__(self, config, websocket_uri="ws://localhost:3000"):
         super(MinecraftEnv, self).__init__()
+        self.config = config
         self.websocket_uri = websocket_uri
         self.websocket = None
         
@@ -99,7 +100,8 @@ class MinecraftEnv(gym.Env):
         bot_pos = initial_state['basic']['position']
         
         #减小初始难度
-        offset = np.random.uniform(-5, 5, size=2)
+        offset_range = self.config['environment']['reset_offset']
+        offset = np.random.uniform(offset_range[0], offset_range[1], size=2)
         self.target_position = {
             'x': bot_pos['x'] + offset[0], 'y': bot_pos['y'], 'z': bot_pos['z'] + offset[1]
         }

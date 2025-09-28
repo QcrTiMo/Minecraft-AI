@@ -1,6 +1,6 @@
 const { WebSocketServer } = require('ws');
 const handleAction = require('../actions');
-const { WEB_SOCKET_PORT } = require('../config');
+const { WEB_SOCKET_PORT } = require('../utils/config');
 
 /**
  * 等待bot.entity可用后再发送初始状态
