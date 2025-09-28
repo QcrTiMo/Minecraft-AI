@@ -156,7 +156,6 @@ class MinecraftEnv(gym.Env):
         #如果任务因超时而截断
         if truncated:
             print(f"--- ✖ 超时失败! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}")
-            observation, self.info = self.reset()
         
         #返回结果
         return observation, reward, terminated, truncated, self.info
