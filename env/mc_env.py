@@ -24,14 +24,14 @@ class MinecraftEnv(gym.Env):
             asyncio.set_event_loop(self.loop)
 
         #动作空间
-        self.action_space = spaces.Discrete(6)
+        self.action_space = spaces.Discrete(5)
         self.action_map = {
             0: ("move", {"direction": "forward", "duration": 250}),
-            1: ("move", {"direction": "back", "duration": 250}),
-            2: ("move", {"direction": "left", "duration": 250}),
-            3: ("move", {"direction": "right", "duration": 250}),
-            4: ("turn", {"angle_change": -math.radians(15)}),
-            5: ("turn", {"angle_change": math.radians(15)}),
+            #1: ("move", {"direction": "back", "duration": 250}),
+            1: ("move", {"direction": "left", "duration": 250}),
+            2: ("move", {"direction": "right", "duration": 250}),
+            3: ("turn", {"angle_change": -math.radians(15)}),
+            4: ("turn", {"angle_change": math.radians(15)}),
             #6: ("jump",)
         }
 
