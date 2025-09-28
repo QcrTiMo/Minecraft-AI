@@ -9,7 +9,7 @@ from utils.checkpoint import Checkpoint
 from typing import Callable
 
 
-TOTAL_TIMESTEPS = 100000     #100000约等于3小时,200000也可以,如果时间允许
+TOTAL_TIMESTEPS = 200000     #100000约等于3小时,200000也可以,如果时间允许
 MODEL_NAME = "model"
 MODELS_DIR = "models"
 LOGS_DIR = "logs"

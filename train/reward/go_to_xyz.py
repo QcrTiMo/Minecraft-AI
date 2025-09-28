@@ -2,12 +2,14 @@ import numpy as np
 import math
 
 TARGET_REACHED_THRESHOLD = 1.0
-REACH_TARGET_REWARD = 100        #到达目标给100
+REACH_TARGET_REWARD = 20.0
+TRUNCATED_PENALTY = -5.0
 ALIVE_PENALTY = -0.1
-TRUNCATED_PENALTY = -10
 
-W_DISTANCE = 10.0  #距离奖励的权重
-W_ANGLE = 2.0      #朝向奖励的权重
+W_DISTANCE = 1.0  #距离奖励的权重
+W_ANGLE = 0.5      #朝向奖励的权重
+
+
 
 def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncated: bool) -> float:
     """
@@ -24,7 +26,6 @@ def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncate
     angle_diff = info['angle_diff_to_target']
     angle_reward = math.cos(angle_diff)
     reward = (distance_reward * W_DISTANCE) + (angle_reward * W_ANGLE) + ALIVE_PENALTY
-    
     return reward
 
 def is_terminated(info: dict) -> bool:

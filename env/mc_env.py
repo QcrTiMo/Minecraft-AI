@@ -99,7 +99,7 @@ class MinecraftEnv(gym.Env):
         bot_pos = initial_state['basic']['position']
         
         #减小初始难度
-        offset = np.random.uniform(-20, 20, size=2)
+        offset = np.random.uniform(-5, 5, size=2)
         self.target_position = {
             'x': bot_pos['x'] + offset[0], 'y': bot_pos['y'], 'z': bot_pos['z'] + offset[1]
         }
