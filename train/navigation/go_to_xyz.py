@@ -32,8 +32,7 @@ if __name__ == "__main__":
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs(LOGS_DIR, exist_ok=True)
 
-    env = MinecraftEnv()
-    vec_env = DummyVecEnv([lambda: env])
+    vec_env = DummyVecEnv([lambda: MinecraftEnv(config=config)])
 
     model_path = os.path.join(MODELS_DIR, f"{MODEL_NAME}.zip")
 
