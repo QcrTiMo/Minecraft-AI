@@ -13,17 +13,19 @@ training:
 
 #环境相关参数
 environment:
-  max_steps: 3000                #每个回合的最大步数上限
+  max_steps: 1500                #每个回合的最大步数上限
   reset_offset: [-8, 8]          #新回合目标点的随机偏移范围 [min, max]
 
 #奖励函数超参数
 reward:
   target_reached_threshold: 1.0  #判定成功的距离
-  reach_target_reward: 20.0      #成功到达的奖励
+  reach_target_reward: 25.0      #成功到达的奖励
   truncated_penalty: -5.0        #超时失败的惩罚
   alive_penalty: -0.1            #每一步的生存惩罚
   w_distance: 1.0                #距离奖励的权重
   w_angle: 0.5                   #朝向奖励的权重
+  PROXIMITY_THRESHOLD: 3.0       #当距离小于3.0时，开始施加徘徊惩罚
+  W_PROXIMITY_PENALTY: 0.5       #徘徊惩罚的权重
 
 #服务器与通信参数
 server:
