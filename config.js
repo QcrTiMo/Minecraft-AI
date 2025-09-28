@@ -1,6 +1,0 @@
-module.exports = {
-  MC_SERVER_PORT: 25565,
-  MC_SERVER_VERSION: '1.21',
-  WEB_SOCKET_PORT: 3000,
-  VIEWER_PORT: 3030,
-};
