@@ -22,6 +22,7 @@ class PlottingCallback(BaseCallback):
         #用于存储详细的训练指标
         self.train_timesteps = []
         self.train_metrics = {
+            'loss': [],
             'value_loss': [],
             'policy_gradient_loss': [],
             'entropy_loss': [],
@@ -91,8 +92,8 @@ class PlottingCallback(BaseCallback):
             print("警告: 没有收集到足够的训练指标数据来绘制图表。")
             return
             
-        #创建一个包含多个子图的大图 (3行2列)
-        fig, axs = plt.subplots(3, 2, figsize=(15, 12))
+        #创建一个包含多个子图的大图
+        fig, axs = plt.subplots(4, 2, figsize=(15, 16))
         fig.suptitle(f'{self.model_name} 详细训练指标', fontsize=16)
         axs = axs.flatten()
 
