@@ -23,7 +23,8 @@ reward:
 
 #服务器与通信参数
 server:
+  name: 'AI_Bot'
+  host: 'localhost'
   mc_port: 25565
   mc_version: "1.21"
   ws_port: 3000
-  viewer_port: 3030
