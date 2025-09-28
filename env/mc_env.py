@@ -90,7 +90,8 @@ class MinecraftEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.loop.run_until_complete(self._connect())
-        print("新回合...")
+        print("新回合... 正在将 AI 传送回出生点 (0, -60, 0)...")
+        self.loop.run_until_complete(self._send_action("teleport", {"x": 0, "y": -60, "z": 0}))
         self.loop.run_until_complete(self._send_action("look", {"yaw": 0, "pitch": 0}))
         initial_state = self.loop.run_until_complete(self._get_next_state())
 
