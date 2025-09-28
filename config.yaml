@@ -1,6 +1,6 @@
 #训练核心参数
 training:
-  algorithm: "PPO"              #强化学习算法选择(现在修改没用)
+  algorithm: "PPO"               #强化学习算法选择(现在修改没用)
   total_timesteps: 100000        #每次运行'learn'的总步数
   model_name: "model"            #模型的统一名称，用于持续学习
   models_dir: "models"           #保存模型的目录
