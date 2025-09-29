@@ -1,31 +1,29 @@
 #训练核心参数
 training:
   algorithm: "PPO"               #强化学习算法选择(现在修改没用)
-  total_timesteps: 100000        #每次运行'learn'的总步数
+  total_timesteps: 300000        #每次运行'learn'的总步数   10w≈3个小时(按照我的世界游戏时刻算的)
   model_name: "model"            #模型的统一名称，用于持续学习
   models_dir: "models"           #保存模型的目录
   logs_dir: "logs"               #保存日志的目录
   device: "cpu"                  #训练设备: "cpu" 或 "cuda" 或 "auto"
   learning_rate: 0.0001          #PPO学习率的初始值
   ppo_params:
-    n_epochs: 20
+    n_epochs: 10
     gae_lambda: 0.92
 
 #环境相关参数
 environment:
-  max_steps: 1500                #每个回合的最大步数上限
-  reset_offset: [-8, 8]          #新回合目标点的随机偏移范围 [min, max]
+  max_steps: 500                #每个回合的最大步数上限
+  reset_offset: [-5, 5]        #新回合目标点的随机偏移范围 [min, max]
 
 #奖励函数超参数
 reward:
   target_reached_threshold: 1.0  #判定成功的距离
-  reach_target_reward: 25.0      #成功到达的奖励
-  truncated_penalty: -5.0        #超时失败的惩罚
-  alive_penalty: -0.1            #每一步的生存惩罚
-  w_distance: 1.0                #距离奖励的权重
-  w_angle: 0.5                   #朝向奖励的权重
-  PROXIMITY_THRESHOLD: 3.0       #当距离小于3.0时，开始施加徘徊惩罚
-  W_PROXIMITY_PENALTY: 0.5       #徘徊惩罚的权重
+  reach_target_reward: 40.0      #成功到达的奖励
+  truncated_penalty: -10.0       #超时失败的惩罚
+  alive_penalty: -0.02           #每一步的生存惩罚
+  w_distance: 5.0                #距离奖励的权重
+  w_angle: 2.0                   #朝向奖励的权重
 
 #服务器与通信参数
 server:
