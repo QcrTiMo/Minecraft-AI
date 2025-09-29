@@ -27,23 +27,20 @@ class MinecraftEnv(gym.Env):
         self.action_space = spaces.Discrete(5)
         self.action_map = {
             0: ("move", {"direction": "forward", "duration": 250}),
-            #1: ("move", {"direction": "back", "duration": 250}),
             1: ("move", {"direction": "left", "duration": 250}),
             2: ("move", {"direction": "right", "duration": 250}),
             3: ("turn", {"angle_change": -math.radians(15)}),
             4: ("turn", {"angle_change": math.radians(15)}),
-            #6: ("jump",)
         }
 
-        #观察空间
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(8,), dtype=np.float32)
 
-        #状态变量
         self.current_state = None
         self.target_position = None
         self.info = {}
         self.previous_info = {}
         self.steps = 0
+        self.episode_reward = 0.0
 
     async def _connect(self):
         if self.websocket is None or self.websocket.close:
@@ -55,7 +52,6 @@ class MinecraftEnv(gym.Env):
         await self.websocket.send(message)
 
     async def _get_next_state(self):
-        #增加超时以防止无限等待
         try:
             message = await asyncio.wait_for(self.websocket.recv(), timeout=10.0)
             return json.loads(message)
@@ -83,9 +79,7 @@ class MinecraftEnv(gym.Env):
             math.cos(yaw_to_target), math.sin(yaw_to_target)
         ], dtype=np.float32)
         
-        #将原始角度信息也一并返回，方便在info中使用
         return observation, bot_yaw, yaw_to_target
-
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -98,25 +92,23 @@ class MinecraftEnv(gym.Env):
             raise RuntimeError("在 reset() 期间未能从服务器获取初始状态。")
 
         origin_point = {'x': 0, 'y': -60, 'z': 0}
-        
-        #减小初始难度
         offset_range = self.config['environment']['reset_offset']
         offset = np.random.uniform(offset_range[0], offset_range[1], size=2)
         self.target_position = {
-        'x': origin_point['x'] + offset[0], 
-        'y': origin_point['y'], 
-        'z': origin_point['z'] + offset[1]
+            'x': origin_point['x'] + offset[0], 
+            'y': origin_point['y'], 
+            'z': origin_point['z'] + offset[1]
         }
         print(f"新回合开始! 目标: ({self.target_position['x']:.1f}, {self.target_position['z']:.1f})")
 
         self.steps = 0
+        self.episode_reward = 0.0
         self.current_state = initial_state
         observation, bot_yaw, yaw_to_target = self._state_to_observation(initial_state)
 
         self.info = {
             "distance_to_target": observation[3],
             "steps": self.steps,
-            #计算并记录角度差
             "angle_diff_to_target": abs(bot_yaw - yaw_to_target)
         }
         self.previous_info = self.info.copy()
@@ -124,7 +116,6 @@ class MinecraftEnv(gym.Env):
         return observation, self.info
 
     def step(self, action):
-        #发送动作并获取新状态
         action_name, params = self.action_map.get(action)
         self.loop.run_until_complete(self._send_action(action_name, params))
         
@@ -135,7 +126,6 @@ class MinecraftEnv(gym.Env):
             observation, self.info = self.reset()
             return observation, -10, False, True, self.info
 
-        #更新状态和信息
         self.steps += 1
         observation, bot_yaw, yaw_to_target = self._state_to_observation(self.current_state)
         self.previous_info = self.info.copy()
@@ -145,21 +135,24 @@ class MinecraftEnv(gym.Env):
             "angle_diff_to_target": abs(bot_yaw - yaw_to_target)
         }
         
-        #判断回合是否结束
         terminated = is_terminated(self.info)
         truncated = is_truncated(self.info)
         
-        #计算奖励
         reward = calculate_reward(self.info, self.previous_info, terminated, truncated)
+        
+        self.episode_reward += reward
 
         if terminated:
-            print(f"--- ✔ 任务成功! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}")
-            
-        #如果任务因超时而截断
+            print(f"--- ✔ 任务成功! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}, 总奖励: {self.episode_reward:.2f}")
         if truncated:
-            print(f"--- ✖ 超时失败! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}")
+            print(f"--- ✖ 超时失败! --- 步数: {self.info['steps']}, 最终距离: {self.info['distance_to_target']:.2f}, 总奖励: {self.episode_reward:.2f}")
         
-        #返回结果
+        if terminated or truncated:
+            self.info['episode'] = {
+                'r': self.episode_reward,
+                'l': self.steps
+            }
+        
         return observation, reward, terminated, truncated, self.info
 
     def close(self):
