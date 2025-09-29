@@ -45,16 +45,14 @@ class PlottingCallback(BaseCallback):
         return True
 
     def _on_rollout_end(self) -> None:
-        """在每次rollout收集数据结束后调用。"""
         log_dict = self.model.logger.name_to_value
         self.rollout_timesteps.append(self.num_timesteps)
-
-
         for key in self.rollout_metrics.keys():
+            full_key = f'rollout/{key}'
             self.rollout_metrics[key].append(log_dict.get(full_key, np.nan))
         for key in self.train_metrics.keys():
-            full_key = f'train/{key}'
-            self.train_metrics[key].append(log_dict.get(full_key, np.nan))
+            full_train_key = f'train/{key}'
+            self.train_metrics[key].append(log_dict.get(full_train_key, np.nan))
 
     def plot_and_save(self):
         """在训练结束后，调用此方法来绘制并保存所有图表。"""
@@ -72,7 +70,6 @@ class PlottingCallback(BaseCallback):
         if self.episode_rewards:
             plots_to_draw.append(('原始回合奖励 (Raw Reward)', self.episode_timesteps, self.episode_rewards))
         
-        # 添加其他PPO训练指标
         for key, values in self.train_metrics.items():
             if any(np.isfinite(values)):
                 plots_to_draw.append((f'训练指标: {key}', self.rollout_timesteps, values))
