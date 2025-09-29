@@ -21,13 +21,30 @@ async function look(bot, { yaw, pitch }) {
 }
 
 async function move(bot, { direction, duration = 250 }) {
-    console.log(`动作: [移动] 开始朝 ${direction} 方向移动，持续 ${duration}ms...`);
-    await timedStateAction(
-        () => bot.setControlState(direction, true),
-        () => bot.setControlState(direction, false),
-        duration
-    );
-    console.log(`动作: [移动] 已停止朝 ${direction} 方向移动。`);
+    //如果方向是向前，则进入疾跑状态
+    if (direction === 'forward') {
+        console.log(`动作: [移动] 开始向前疾跑，持续 ${duration}ms...`);
+        await timedStateAction(
+            () => {
+                bot.setControlState('forward', true);
+                bot.setControlState('sprint', true);
+            },
+            () => {
+                bot.setControlState('forward', false);
+                bot.setControlState('sprint', false);
+            },
+            duration
+        );
+        console.log(`动作: [移动] 已停止向前疾跑。`);
+    } else {
+        console.log(`动作: [移动] 开始朝 ${direction} 方向移动，持续 ${duration}ms...`);
+        await timedStateAction(
+            () => bot.setControlState(direction, true),
+            () => bot.setControlState(direction, false),
+            duration
+        );
+        console.log(`动作: [移动] 已停止朝 ${direction} 方向移动。`);
+    }
 }
 
 async function jump(bot) {
