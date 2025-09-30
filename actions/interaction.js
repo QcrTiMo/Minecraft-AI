@@ -56,9 +56,71 @@ async function eatFood(bot) {
     console.log(`[交互] 吃完了 ${food.name}`);
 }
 
+async function smeltItem(bot, { furnaceBlock, inputItemName, fuelItemName, count }) {
+    const mcData = require('minecraft-data')(bot.version);
+
+    //查找物品ID
+    const inputItem = mcData.itemsByName[inputItemName];
+    const fuelItem = mcData.itemsByName[fuelItemName];
+    if (!inputItem || !fuelItem) {
+        console.log(`[交互] 无效的物品名称: ${inputItemName} 或 ${fuelItemName}`);
+        return;
+    }
+
+    console.log(`[交互] 开始熔炼 ${count} 个 ${inputItemName} 使用 ${fuelItemName}`);
+    const furnace = await bot.openFurnace(furnaceBlock);
+
+    for (let i = 0; i < count; i++) {
+        //放入原料
+        await furnace.putInput(inputItem.id, null, 1);
+        //检查一下燃料槽是否为空
+        if (!furnace.fuelItem() || furnace.fuel < 0.1) {
+            await furnace.putFuel(fuelItem.id, null, 1);
+        }
+        
+        await new Promise(resolve => {
+            const listener = () => {
+                if (furnace.outputItem()) {
+                    furnace.off('update', listener);
+                    resolve();
+                }
+            };
+            furnace.on('update', listener);
+        });
+
+        //取出成品
+        await furnace.takeOutput();
+        console.log(`[交互] 已成功熔炼 1 个，剩余 ${count - 1 - i} 个`);
+    }
+
+    await furnace.close();
+    console.log('[交互] 熔炼任务完成');
+}
+
+async function placeItem(bot, { itemName, referenceBlock, faceVector }) {
+    const item = bot.inventory.items().find(i => i.name === itemName);
+    if (!item) {
+        console.log(`[交互] 物品栏中没有 ${itemName}`);
+        return;
+    }
+    //装备物品
+    await bot.equip(item, 'hand');
+
+    //看向要放置的位置
+    const placePosition = referenceBlock.position.plus(faceVector);
+    await bot.lookAt(placePosition);
+
+    //激活物品(倒水)
+    bot.activateItem();
+    console.log(`[交互] 在 ${placePosition} 处使用了 ${itemName}`);
+    await new Promise(resolve => setTimeout(resolve, 200));
+}
+
 module.exports = {
     mineBlock,
     placeBlock,
     useBlock,
     eatFood,
+    smeltItem,
+    placeItem,
 };

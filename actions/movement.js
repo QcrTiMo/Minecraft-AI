@@ -64,10 +64,40 @@ async function bridge(bot, { blockName, count }) {
     console.log(`[移动] 搭路完成 ${count} 格`);
 }
 
+async function pillarUp(bot, { blockName, count }) {
+    const blocks = bot.inventory.items().find(item => item.name === blockName);
+    if (!blocks || blocks.count < count) {
+        console.log(`[移动] 没有足够的 ${blockName} 来垫高 (需要 ${count}, 拥有 ${blocks?.count ?? 0})`);
+        return;
+    }
+    await bot.equip(blocks, 'hand');
+
+    console.log(`[移动] 开始向上垫高 ${count} 格`);
+    for (let i = 0; i < count; i++) {
+        bot.setControlState('jump', true);
+        await bot.look(bot.entity.yaw, -Math.PI / 2, true);
+        
+        const referenceBlock = bot.blockAt(bot.entity.position.offset(0, -1, 0));
+        try {
+            await bot.placeBlock(referenceBlock, new bot.registry.Vec3(0, 1, 0));
+        } 
+        catch (e) {
+            bot.setControlState('jump', false);
+            await new Promise(r => setTimeout(r, 100));
+            i--;
+            continue;
+        }
+        bot.setControlState('jump', false);
+        await bot.waitForTicks(2);
+    }
+    console.log(`[移动] 垫高完成`);
+}
+
 module.exports = {
     move,
     jump,
     look,
     turn,
-    bridge
+    bridge,
+    pillarUp,
 };
