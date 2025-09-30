@@ -2,7 +2,8 @@
 .venv
 .vscode
 logs/
-models
+*.zip
+*.safetensors
 training_background/
 __pycache__
 *safetensors
