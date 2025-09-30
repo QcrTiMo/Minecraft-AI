@@ -6,5 +6,4 @@ logs/
 *.safetensors
 training_background/
 __pycache__
-*safetensors
 node_modules
