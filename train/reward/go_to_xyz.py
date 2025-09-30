@@ -13,7 +13,7 @@ W_ANGLE = reward_config['w_angle']
 
 def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncated: bool) -> float:
     """
-    计算“移动到指定坐标”任务的奖励（修改版）。
+    计算“移动到指定坐标”任务的奖励
     """
     if terminated:
         return REACH_TARGET_REWARD
