@@ -48,7 +48,7 @@ class MinecraftEnv(gym.Env):
 
     async def _connect(self):
         """确保 WebSocket 连接是活跃的。"""
-        if self.websocket is None or self.websocket.closed:
+        if self.websocket is None or self.websocket.close:
             try:
                 self.websocket = await websockets.connect(self.websocket_uri)
                 print("环境已成功连接到 Mineflayer 服务器。")
@@ -107,7 +107,7 @@ class MinecraftEnv(gym.Env):
         
         print("\n--- 新回合开始 ---")
         print("正在重置机器人位置...")
-        self.loop.run_until_complete(self._send_action("resetPosition"))
+        self.loop.run_until_complete(self._send_action("tp"))
         self.loop.run_until_complete(self._send_action("look", {"yaw": 0, "pitch": 0}))
         
         initial_state = self.loop.run_until_complete(self._get_next_state())
@@ -150,7 +150,7 @@ class MinecraftEnv(gym.Env):
         if self.current_state is None:
             print("通信超时或连接断开，将提前终止此回合。")
             dummy_observation = np.zeros(self.observation_space.shape, dtype=np.float32)
-            timeout_penalty = -100.0 
+            timeout_penalty = -100.0
             return dummy_observation, timeout_penalty, False, True, {"error": "communication_timeout"}
 
         self.steps += 1
@@ -184,7 +184,7 @@ class MinecraftEnv(gym.Env):
 
     def close(self):
         """关闭环境，清理资源。"""
-        if self.websocket and not self.websocket.closed:
+        if self.websocket and not self.websocket.close:
             try:
                 self.loop.run_until_complete(self.websocket.close())
                 print("WebSocket 连接已成功关闭。")
