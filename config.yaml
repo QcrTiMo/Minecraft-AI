@@ -1,29 +1,39 @@
 #训练核心参数
 training:
-  algorithm: "PPO"               #强化学习算法选择(现在修改没用)
-  total_timesteps: 300000        #每次运行'learn'的总步数  10w≈3个小时(按照我的世界游戏时刻算的)
-  model_name: "model"            #模型的统一名称，用于持续学习
-  models_dir: "models"           #保存模型的目录
-  logs_dir: "logs"               #保存日志的目录
-  device: "cpu"                  #训练设备: "cpu" 或 "cuda" 或 "auto"
-  learning_rate: 0.0001          #PPO学习率的初始值
+  algorithm: "PPO"                     #强化学习算法选择(现在修改没用)
+  total_timesteps: 500000              #每次运行'learn'的总步数  10w≈3个小时(按照我的世界游戏时刻算的)
+  save_freq: 4096                      #每4096步保存一次模型
+  model_name: "goto_xyz_model"         #模型的统一名称，用于持续学习
+  models_dir: "models"                 #保存模型的目录
+  models_history_dir: "models/history" #保存历史模型的目录
+  logs_dir: "logs"                     #保存日志的目录
+  device: "cpu"                        #训练设备: "cpu" 或 "cuda" 或 "auto"
+  learning_rate: 0.0003                #PPO学习率的初始值
+  eval_freq: 4096                      #每4096步评估一次
+  n_eval_episodes: 20                  #每次评估跑20个回合
   ppo_params:
+    n_steps: 2048                      #每次更新模型前，每个环境要跑多少步
+    batch_size: 64                     #mini-batch的大小。
     n_epochs: 10
-    gae_lambda: 0.92
+    gae_lambda: 0.95                   #通常在0.9到0.99之间
+    clip_range: 0.2                    #PPO的裁剪范围，常用0.1或0.2
+    ent_coef: 0.01                     #熵系数，鼓励探索
 
 #环境相关参数
 environment:
-  max_steps: 500                #每个回合的最大步数上限
-  reset_offset: [-5, 5]        #新回合目标点的随机偏移范围 [min, max]
+  max_steps: 500                       #每个回合的最大步数上限
+  reset_offset: [-5, 5]                #新回合目标点的随机偏移范围 [min, max]
 
 #奖励函数超参数
 reward:
-  target_reached_threshold: 1.0  #判定成功的距离
-  reach_target_reward: 40.0      #成功到达的奖励
-  truncated_penalty: -10.0       #超时失败的惩罚
-  alive_penalty: -0.02           #每一步的生存惩罚
-  w_distance: 5.0                #距离奖励的权重
-  w_angle: 2.0                   #朝向奖励的权重
+  target_reached_threshold: 1.5        #判定成功的距离
+  reach_target_reward: 500.0           #成功到达的奖励
+  truncated_penalty: -100.0            #超时失败的惩罚
+  alive_penalty: -0.1                  #每一步的生存惩罚
+
+  distance_reward: 10.0                #距离缩短的奖励权重
+  head_to_reward: 5.0                  #朝向目标的奖励权重
+  stand_penalty: -0.5                  #原地打转或无效移动的惩罚
 
 #服务器与通信参数
 server:
