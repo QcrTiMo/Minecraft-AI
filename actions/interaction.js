@@ -1,34 +1,64 @@
-async function digBlock(bot, {x, y, z}){
-    const targetBlock = bot.blockAt(new Vec3(x, y, z));
-    if (targetBlock){
-        console.log(`动作: 开始挖掘位于 (${x},${y},${z}) 的 ${targetBlock.name}`);
-        await bot.dig(targetBlock);
-        console.log(`动作: 挖掘完成`);
+async function mineBlock(bot, { block }) {
+    if (!block) {
+        console.log("[交互] 无效的挖掘目标");
+        return;
     }
-    else{
-        console.error(`动作: 未找到位于 (${x},${y},${z}) 的方块`);
+    //TODO
+    if (bot.canDigBlock(block)) {
+        console.log(`[交互] 开始挖掘 ${block.name}`);
+        await bot.dig(block);
+        console.log(`[交互] 完成挖掘 ${block.name}`);
+    }
+    else {
+        console.log(`[交互] 无法挖掘 ${block.name}`);
     }
 }
 
-async function placeBlock(bot, {x, y, z, blockName}){
-    //需要Bot手持物品方块
-    console.log(`动作: 开始在 (${x},${y},${z}) 放置 ${blockName}(TODO)`);
+async function placeBlock(bot, { blockName, position }) {
+    const blockInHand = bot.inventory.items().find(item => item.name === blockName);
+    if (!blockInHand) {
+        console.log(`[交互] 手中没有 ${blockName}`);
+        return;
+    }
+    await bot.equip(blockInHand, 'hand');
+    
+    const referenceBlock = bot.blockAt(position.offset(0, -1, 0));
+    await bot.placeBlock(referenceBlock, new bot.registry.Vec3(0, 1, 0));
+    console.log(`[交互] 在 ${position} 放置了 ${blockName}`);
 }
 
-async function attack(bot, {entityId}){
-    const targetEntity = bot.entities[entityId];
-    if (targetEntity){
-        console.log(`动作: 攻击实体 ${targetEntity.displayName}`);
-        await bot.attack(targetEntity);
+async function useBlock(bot, { block }) {
+    if (!block) {
+        console.log("[交互] 无效的使用目标");
+        return;
     }
-    else{
-        console.error(`动作: 未找到ID为 ${entityId} 的实体`);
+    console.log(`[交互] 正在使用 ${block.name}`);
+    await bot.activateBlock(block);
+}
+
+async function eatFood(bot) {
+    const mcData = require('minecraft-data')(bot.version);
+    //找到最有营养的食物
+    const food = bot.inventory.items().sort((a, b) => {
+        const foodA = mcData.foods[a.type];
+        const foodB = mcData.foods[b.type];
+        return (foodB?.foodPoints ?? 0) - (foodA?.foodPoints ?? 0);
+    })[0];
+    
+    if (!food || !mcData.foods[food.type]) {
+        console.log("[交互] 没有食物可以吃");
+        return;
     }
+
+    await bot.equip(food, 'hand');
+    console.log(`[交互] 正在吃 ${food.name}`);
+    await bot.consume();
+    console.log(`[交互] 吃完了 ${food.name}`);
 }
 
 module.exports = {
-    digBlock,
+    mineBlock,
     placeBlock,
-    attack,
-    //TODO
-}
+    useBlock,
+    eatFood,
+};
