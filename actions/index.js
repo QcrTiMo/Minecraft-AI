@@ -3,7 +3,7 @@ const crafting = require('./crafting');
 const interaction = require('./interaction');
 const inventory = require('./inventory');
 const movement = require('./movement');
-const perception = require('./perception');
+const ganzhi = require('./ganzhi');
 const tp = require('./tp');
 
 const actions = {
@@ -12,7 +12,7 @@ const actions = {
     ...interaction,
     ...inventory,
     ...movement,
-    ...perception,
+    ...ganzhi,
     ...tp,
 };
 
