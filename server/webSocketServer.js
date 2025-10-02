@@ -1,5 +1,5 @@
 const { WebSocketServer } = require('ws');
-const handleAction = require('../actions');
+const { Action } = require('../actions/index');
 const config = require('../utils/config');
 
 /**
@@ -31,17 +31,22 @@ function startWebSocketServer(bot) {
     sendInitialStateWhenReady(ws, bot);
 
     ws.on('message', async message => {
-      const data = JSON.parse(message);
-      if (data.type === 'action' && bot && bot.entity) {
-        try {
+      try {
+        const data = JSON.parse(message);
+
+        if (data.type === 'action' && bot && bot.entity) {
             const pos = bot.entity.position;
-            console.log(`[坐标] X: ${pos.x.toFixed(2)}, Y: ${pos.y.toFixed(2)}, Z: ${pos.z.toFixed(2)}`);
-            await handleAction(bot, data.action);
-        } catch (error) {
-            console.error("处理动作时发生错误:", error);
-        } finally {
-            sendState(ws, bot);
+            console.log(`[当前坐标] X: ${pos.x.toFixed(2)}, Y: ${pos.y.toFixed(2)}, Z: ${pos.z.toFixed(2)}`);
+            const actionName = data.action.name;
+            const actionArgs = data.action.args;
+            await Action(bot, actionName, actionArgs);
         }
+      } 
+      catch (error) {
+          console.error("处理动作时发生错误:", error);
+      } 
+      finally {
+          sendState(ws, bot);
       }
     });
 

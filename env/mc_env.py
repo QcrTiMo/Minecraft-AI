@@ -56,11 +56,11 @@ class MinecraftEnv(gym.Env):
                 print("错误：连接被拒绝。请确保 Mineflayer 服务器正在运行。")
                 raise
 
-    async def _send_action(self, action_name, params={}):
+    async def _send_action(self, action_name, args={}):
         """向服务器发送一个动作指令。"""
-        if params is None:
-            params = {}
-        message = json.dumps({"type": "action", "action": {"name": action_name, "params": params}})
+        if args is None:
+            args = {}
+        message = json.dumps({"type": "action", "action": {"name": action_name, "args": args}})
         await self.websocket.send(message)
 
     async def _get_next_state(self):
@@ -143,8 +143,8 @@ class MinecraftEnv(gym.Env):
         return observation, self.info
 
     def step(self, action):
-        action_name, params = self.action_map.get(action)
-        self.loop.run_until_complete(self._send_action(action_name, params))
+        action_name, args = self.action_map.get(action)
+        self.loop.run_until_complete(self._send_action(action_name, args))
         self.current_state = self.loop.run_until_complete(self._get_next_state())
 
         if self.current_state is None:

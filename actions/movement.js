@@ -1,4 +1,4 @@
-async function move(bot, { direction, duration = 250 }) {
+async function move(bot, { direction, duration = 250 } = {}) {
     const canSprint = direction === 'forward' && bot.food > 6;
 
     if (canSprint) {

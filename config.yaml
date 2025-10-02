@@ -2,7 +2,7 @@
 training:
   algorithm: "PPO"                     #强化学习算法选择(现在修改没用)
   total_timesteps: 500000              #每次运行'learn'的总步数  10w≈3个小时(按照我的世界游戏时刻算的)
-  save_freq: 4096                      #每4096步保存一次模型
+  save_freq: 10000                     #每10000步保存一次模型
   model_name: "goto_xyz_model"         #模型的统一名称，用于持续学习
   models_dir: "models"                 #保存模型的目录
   models_history_dir: "models/history" #保存历史模型的目录
@@ -26,7 +26,7 @@ environment:
 
 #奖励函数超参数
 reward:
-  target_reached_threshold: 1.5        #判定成功的距离
+  target_reached_threshold: 1.0        #判定成功的距离
   reach_target_reward: 500.0           #成功到达的奖励
   truncated_penalty: -100.0            #超时失败的惩罚
   alive_penalty: -0.1                  #每一步的生存惩罚
@@ -39,6 +39,6 @@ reward:
 server:
   name: 'AI_Bot'
   host: 'localhost'
-  mc_port: 25565
+  mc_port: 12345
   mc_version: "1.21"
   ws_port: 3000

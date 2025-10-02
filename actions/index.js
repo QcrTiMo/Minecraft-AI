@@ -16,7 +16,7 @@ const actions = {
     ...tp,
 };
 
-async function executeAction(bot, name, args) {
+async function Action(bot, name, args) {
     if (actions[name]) {
         try {
             return await actions[name](bot, args);
@@ -31,6 +31,6 @@ async function executeAction(bot, name, args) {
 }
 
 module.exports = {
-    executeAction,
+    Action,
     ...actions,
 };
