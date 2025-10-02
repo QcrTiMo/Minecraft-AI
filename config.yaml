@@ -35,6 +35,9 @@ reward:
   head_to_reward: 5.0                  #朝向目标的奖励权重
   stand_penalty: -0.5                  #原地打转或无效移动的惩罚
 
+  efficiency_base: 5000                #效率奖励的基础分
+  efficiency_step: 10                  #每走一步扣多少分
+
 #服务器与通信参数
 server:
   name: 'AI_Bot'
