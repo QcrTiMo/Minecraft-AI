@@ -1,5 +1,13 @@
 # Minecraft-AI: 基于 Mineflayer 和 PyTorch 的 Minecraft AI 训练框架
 
+![Status](https://img.shields.io/badge/Status-In%20Development-orange) ![Warning](https://img.shields.io/badge/Warning-Do%20Not%20Pull-red)
+
+> [!WARNING]
+> **本项目正在密集开发中，当前为主干开发分支，请勿直接拉取使用。**
+>
+> 目前的版本仅用于开发和测试，API和功能随时可能变更或删除，不保证任何可用性。请等待正式的 Release 版本发布。
+
+
 这是一个用于在《我的世界》(Minecraft) 中训练智能 AI 的强化学习框架。本项目利用 Node.js 端的 [**Mineflayer**](https://github.com/PrismarineJS/mineflayer) 库与游戏进行底层交互，并通过 WebSocket 将其封装成一个标准的、可供 Python 端调用的 **Gymnasium** 环境。AI 的训练基于 **PyTorch** 和 **Stable Baselines3** 库。
 
 整个框架的核心特性是**自动化**、**模块化**和**持续学习**：
