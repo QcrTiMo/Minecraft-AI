@@ -14,6 +14,7 @@ HEAD_TO_REWARD = reward_config['head_to_reward']
 STAND_PENALTY = reward_config['stand_penalty']
 efficiency_base = reward_config['efficiency_base']
 efficiency_step = reward_config['efficiency_step']
+bump_penaltys = reward_config['bump_penalty']
 
 def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncated: bool) -> float:
     """
@@ -43,6 +44,12 @@ def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncate
     angle_diff = info['angle_diff_to_target']
     heading_reward = ((math.cos(angle_diff) + 1) / 2) * HEAD_TO_REWARD
 
+    #撞墙惩罚
+    bump_penalty = 0.0
+    if info.get('action') in [0, 1, 2] and abs(distance_now - distance_before) < 0.05:
+        # 如果执行了移动，但位置几乎没变，说明撞墙了
+        bump_penalty = bump_penaltys
+
     #停滞惩罚
     stagnation_penalty = 0.0
     if abs(distance_now - distance_before) < 0.01 and angle_diff > 0.3:
@@ -52,7 +59,7 @@ def calculate_reward(info: dict, previous_info: dict, terminated: bool, truncate
     alive_penalty = ALIVE_PENALTY
 
     #计算基础的过程总奖励
-    total_process_reward = (progress_reward + heading_reward + stagnation_penalty + alive_penalty)
+    total_process_reward = (progress_reward + heading_reward + stagnation_penalty + alive_penalty + bump_penalty)
     
     #累加最终奖励
     return total_process_reward + final
