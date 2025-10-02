@@ -26,17 +26,18 @@ class MinecraftEnv(gym.Env):
             asyncio.set_event_loop(self.loop)
 
         #动作空间：5个离散动作 (前进, 左移, 右移, 左转, 右转)
-        self.action_space = spaces.Discrete(5)
+        self.action_space = spaces.Discrete(6)
         self.action_map = {
             0: ("move", {"direction": "forward", "duration": 250}),
             1: ("move", {"direction": "left", "duration": 250}),
             2: ("move", {"direction": "right", "duration": 250}),
             3: ("turn", {"angle_change": -math.radians(15)}),
             4: ("turn", {"angle_change": math.radians(15)}),
+            5: ("jump", {}),
         }
 
         #观测空间：[相对位置(x,y,z), 距离, cos(自身朝向), sin(自身朝向), cos(目标朝向), sin(目标朝向)]
-        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(8,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(17,), dtype=np.float32)
 
         #环境状态变量
         self.current_state = None
@@ -75,6 +76,12 @@ class MinecraftEnv(gym.Env):
             print("警告：WebSocket 连接已关闭。")
             self.websocket = None
             return None
+    
+    async def _get_observation_data(self):
+        """向服务器请求完整的观测数据，包括周围环境。"""
+        message = json.dumps({"type": "action", "action": {"name": "getBotStatus", "args": {}}})
+        await self.websocket.send(message)
+        return await self._get_next_state()
 
     def _state_to_observation(self, state):
         """将原始状态字典转换为NumPy观测数组。"""
@@ -90,12 +97,15 @@ class MinecraftEnv(gym.Env):
         distance = np.linalg.norm(rel_pos)
         yaw_to_target = math.atan2(-rel_pos[0], -rel_pos[2])
         
-        observation = np.array([
+        gps_observation = np.array([
             rel_pos[0], rel_pos[1], rel_pos[2],
             distance,
             math.cos(bot_yaw), math.sin(bot_yaw),
             math.cos(yaw_to_target), math.sin(yaw_to_target)
         ], dtype=np.float32)
+
+        local_env_heights = np.array(state.get('local_env', [0]*9), dtype=np.float32)
+        observation = np.concatenate([gps_observation, local_env_heights])
         
         angle_diff = bot_yaw - yaw_to_target
         angle_diff = (angle_diff + np.pi) % (2 * np.pi) - np.pi
@@ -125,6 +135,13 @@ class MinecraftEnv(gym.Env):
             'y': origin_point['y'],
             'z': origin_point['z'] + offset_z
         }
+
+        mid_x = (initial_state['basic']['position']['x'] + self.target_position['x']) / 2
+        mid_z = (initial_state['basic']['position']['z'] + self.target_position['z']) / 2
+        #在中点位置生成一堵1格高的墙
+        wall_args = { "position": {"x": mid_x, "z": mid_z}, "blockName": "cobblestone" }
+        self.loop.run_until_complete(self._send_action("placeBlock", wall_args))
+        print(f"已在路径中间生成一堵墙作为障碍。")
         print(f"新目标已设定: ({self.target_position['x']:.1f}, {self.target_position['z']:.1f})")
 
         #重置内部状态
@@ -136,7 +153,7 @@ class MinecraftEnv(gym.Env):
         self.info = {
             "distance_to_target": observation[3],
             "steps": self.steps,
-            "angle_diff_to_target": abs(angle_diff)
+            "angle_diff_to_target": abs(angle_diff),
         }
         self.previous_info = self.info.copy()
         
@@ -160,7 +177,8 @@ class MinecraftEnv(gym.Env):
         self.info = {
             "distance_to_target": observation[3],
             "steps": self.steps,
-            "angle_diff_to_target": abs(angle_diff)
+            "angle_diff_to_target": abs(angle_diff),
+            "action": action,
         }
         
         terminated = is_terminated(self.info)
